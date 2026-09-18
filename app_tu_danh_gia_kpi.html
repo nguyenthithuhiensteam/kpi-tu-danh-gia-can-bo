@@ -200,11 +200,11 @@ footer{ text-align:center; color:var(--ink-soft); font-size:11.5px; padding:26px
 
 <div class="pagehead">
   <div class="letterhead">
-    <div class="side"><b id="lh-coquan">CƠ QUAN ỦY BAN MTTQ VIỆT NAM</b>phường<span id="lh-donvi2"> Bình Thuận</span><div class="rule"></div></div>
-    <div class="side"><b>ĐẢNG CỘNG SẢN VIỆT NAM</b><span id="lh-date">Tuyên Quang, quý III năm 2026</span><div class="rule"></div></div>
+    <div class="side"><b id="lh-coquan"></b><div id="lh-donvi2"></div><div class="rule"></div></div>
+    <div class="side"><b id="lh-hieu1"></b><div id="lh-hieu2" style="font-style:italic;"></div><div id="lh-date"></div><div class="rule"></div></div>
   </div>
   <h1>BẢN TỰ ĐÁNH GIÁ, XẾP LOẠI CỦA CÁ NHÂN</h1>
-  <div class="sub" id="lh-quy">Quý III, Năm 2026</div>
+  <div class="sub" id="lh-quy"></div>
 </div>
 
 <div class="scorebar">
@@ -450,47 +450,32 @@ function defaultTask(over){
   }, over);
 }
 
-// Prefilled with the finalized Quý III/2026 data (Nguyễn Văn Đức) as a working example
-const GROUP_A_SEED = [
-  defaultTask({name:'Tuyên truyền, phổ biến chủ trương của Đảng, chính sách pháp luật Nhà nước đến cán bộ, hội viên CCB và nhân dân', canCu:'KH số 32/KH-CCB ngày 29/7/2026; Chương trình CT năm 2026', sanPham:'Các CV tuyên truyền NQ ĐH XIV; Chỉ thị 07-CT/TW; Nghị quyết TW3 khóa XIV', tienDoHan:'Hàng tháng (T7,T8,T9)', nhom:'N2', heSo:40, E:3, K:3, N:1, chamNgay:0}),
-  defaultTask({name:'Chỉ đạo 12 chi hội tham gia phong trào thi đua "CCB gương mẫu" gắn xây dựng đô thị văn minh; phong trào giảm nghèo', canCu:'KH số 32/KH-CCB; CT Hội CCB năm 2026', sanPham:'BC tháng 7,8,9/2026; Tin bài, hình ảnh hoạt động', tienDoHan:'Cả quý', nhom:'N2', heSo:35, E:1, K:1, N:1, chamNgay:0}),
-  defaultTask({name:'Xây dựng Kế hoạch công tác Hội và phong trào CCB Quý III/2026 theo nguyên tắc "6 rõ"', canCu:'CV số 240-CV/BXDĐ ngày 23/7/2026 của Ban XD Đảng', sanPham:'KH số 32/KH-CCB ngày 29/7/2026', tienDoHan:'Tháng 7/2026', nhom:'N3', heSo:60, E:1, K:1, N:1, chamNgay:0}),
-  defaultTask({name:'Tổ chức kiện toàn từ 29 chi hội xuống 12 chi hội sau sắp xếp tổ dân phố; chỉ đạo bàn giao hồ sơ, sổ sách, tài chính', canCu:'Đề án sắp xếp TDP phường Bình Thuận; CT Hội năm 2026', sanPham:'12/12 chi hội hoàn thành bàn giao; còn 2 chi hội chậm tiến độ', tienDoHan:'Tháng 7-8/2026', nhom:'N2', heSo:40, E:12, K:12, N:0.75, chamNgay:0}),
-  defaultTask({name:'Tổ chức tập huấn, hướng dẫn nghiệp vụ công tác Hội cho chi hội trưởng, chi hội phó 12 chi hội sau sáp nhập; phát động phong trào CCB quản lý trật tự đô thị', canCu:'KH số 32/KH-CCB', sanPham:'01 Hội nghị tập huấn; KH phong trào quản lý TTĐT', tienDoHan:'Tháng 8/2026', nhom:'N3', heSo:60, E:1, K:1, N:0.75, chamNgay:0}),
-  defaultTask({name:'Ban hành CV và KH tuyên truyền phong trào "Bình dân học vụ số"; NQ57-NQ/TW về KHCN, chuyển đổi số; Đề án 06 trong cán bộ, hội viên CCB', canCu:'NQ57-NQ/TW; CV 253-CV/BXDĐ ngày 05/8/2026; KH số 32/KH-CCB', sanPham:'KH tuyên truyền "Bình dân học vụ số"; CV số tuyên truyền NQ57', tienDoHan:'Tháng 8-9/2026', nhom:'N2', heSo:40, E:2, K:2, N:1, chamNgay:0}),
-  defaultTask({name:'Rà soát, kê khai, thu thập dữ liệu cán bộ, hội viên CCB phục vụ chuyển đổi số quản lý hội viên', canCu:'CV rà soát kê khai dữ liệu HV CCB', sanPham:'Tiếp nhận phiếu thu thập từ chi hội 1,7,8; tổng hợp danh sách HV qua các thời kỳ', tienDoHan:'Tháng 8-9/2026', nhom:'N2', heSo:40, E:12, K:3, N:0, chamNgay:0}),
-  defaultTask({name:'Tổ chức Hội nghị sơ kết công tác Hội 6 tháng đầu năm 2026; chỉ đạo 12/12 chi hội tổ chức sơ kết', canCu:'KH số 32/KH-CCB; CT Hội năm 2026', sanPham:'Biên bản, NQ Hội nghị sơ kết 6 tháng; 12/12 chi hội sơ kết', tienDoHan:'Tháng 7/2026', nhom:'N3', heSo:60, E:1, K:1, N:1, chamNgay:0}),
-  defaultTask({name:'Kết nạp hội viên mới; rà soát, lập hồ sơ đề nghị tặng Kỷ niệm chương CCB Việt Nam năm 2026; rà soát HV qua các thời kỳ kháng chiến', canCu:'Điều lệ Hội CCB; KH số 32/KH-CCB', sanPham:'07 QĐ kết nạp HV mới; Tờ trình + danh sách đề nghị Kỷ niệm chương; Báo cáo HV qua các thời kỳ', tienDoHan:'T7, T8/2026', nhom:'N2', heSo:40, E:3, K:3, N:1, chamNgay:0}),
-  defaultTask({name:'Tham gia Hội nghị tập huấn nghiệp vụ công tác Hội do Hội CCB tỉnh Tuyên Quang tổ chức', canCu:'Giấy mời của Hội CCB tỉnh Tuyên Quang', sanPham:'Tham dự 2 ngày (21-22/8/2026); nội dung triển khai lại tại Hội CCB phường', tienDoHan:'21-22/8/2026', nhom:'N2', heSo:40, E:1, K:1, N:1, chamNgay:0}),
-  defaultTask({name:'Kiểm tra, quản lý 9 Tổ TK&VV; phối hợp NHCSXH sáp nhập từ 9 xuống còn 6 tổ TK&VV; duy trì 204 hộ vay, dư nợ 12.017 triệu đồng, không nợ xấu', canCu:'KH số 32/KH-CCB mục 10; Hợp đồng ủy thác NHCSXH', sanPham:'BC kiểm tra TK&VV; Biên bản sáp nhập 9→6 tổ', tienDoHan:'T7, T9/2026', nhom:'N3', heSo:60, E:4, K:4, N:1, chamNgay:0}),
-  defaultTask({name:'Tổ chức hoạt động nghĩa tình đồng đội nhân 79 năm Ngày TB-LS (27/7): thăm hỏi, tặng quà 5 gia đình chính sách; phủ quân kỳ cho 11 HV từ trần trong quý', canCu:'KH số 32/KH-CCB mục 2; Đạo lý "Uống nước nhớ nguồn"', sanPham:'Thăm tặng 5 hộ; phủ quân kỳ T7:2HV, T8:5HV, T9:4HV', tienDoHan:'Cả quý', nhom:'N3', heSo:60, E:11, K:11, N:1, chamNgay:0}),
-  defaultTask({name:'Triển khai "Chiến dịch 500 ngày đêm tìm kiếm, quy tập và xác định danh tính hài cốt LS": vận động ủng hộ và phối hợp khai quật 01 hài cốt LS', canCu:'Hướng dẫn của cấp trên về Chiến dịch 500 ngày đêm; KH tuyên truyền', sanPham:'Tiếp nhận trên 24 triệu đồng; phối hợp quy tập 01 hài cốt LS tại TDP 8 → NTL Vị Xuyên', tienDoHan:'T7-T9/2026', nhom:'N4', heSo:80, E:1, K:1, N:1, chamNgay:0}),
-  defaultTask({name:'Phối hợp MTTQ, đoàn thể và tổ dân phố 2 tổ chức ra quân vệ sinh môi trường đường Phùng Chí Kiên; duy trì phong trào "Bình Thuận chung tay xử lý rác thải"', canCu:'KH số 32/KH-CCB mục 4; CT phối hợp MTTQ', sanPham:'Ra quân VSMT đường Phùng Chí Kiên; tin bài, hình ảnh cả quý', tienDoHan:'T8-T9/2026', nhom:'N2', heSo:40, E:2, K:2, N:1, chamNgay:0}),
-  defaultTask({name:'Tham gia diễn tập phòng thủ tác chiến phường năm 2026; họp Hội đồng NVQS chuẩn bị rà soát khám sơ tuyển NVQS năm 2027', canCu:'KH diễn tập phòng thủ phường 2026', sanPham:'Tham gia khung diễn tập tác chiến phường; họp Hội đồng NVQS phường', tienDoHan:'T6, T9/2026', nhom:'N3', heSo:60, E:2, K:2, N:1, chamNgay:0}),
-  defaultTask({name:'Xây dựng đề cương, KH giám sát công tác xây dựng lực lượng dân quân, chế độ chính sách (QĐ 142, 62, 49/TTg) đối với Ban CHQS phường', canCu:'KH số 32/KH-CCB mục 8; BC tuần 18-24/7; BC tháng 8/2026', sanPham:'Chưa thực hiện được do thay đổi cơ cấu tổ chức Ban CHQS phường', tienDoHan:'Tháng 8-9/2026', nhom:'N3', heSo:60, E:1, K:0, N:0, chamNgay:99})
-];
-const GROUP_B_SEED = [
-  defaultTask({name:'Kiện toàn tổ chức từ 29 chi hội xuống 12 chi hội; tổ chức 01 Hội nghị tập huấn nghiệp vụ cho 12 chi hội trưởng, phó sau sáp nhập; phát động phong trào CCB quản lý TTĐT, ATGT', canCu:'Đề án sắp xếp TDP phường; CV 240-CV/BXDĐ ngày 23/7/2026; KH số 32/KH-CCB', sanPham:'12/12 chi hội hoàn thành bàn giao; 01 HN tập huấn; một số chi hội bàn giao còn chậm', tienDoHan:'T7-T8/2026', nhom:'N4', heSo:80, E:1, K:1, N:0.75, chamNgay:5}),
-  defaultTask({name:'Xây dựng KH và tổ chức tuyên truyền, vận động cán bộ, Hội viên ủng hộ "Chiến dịch 500 ngày đêm"; phối hợp Ban CHQS phường và Đội quy tập hài cốt LS tỉnh TQ khai quật, quy tập 01 hài cốt LS tại TDP 8', canCu:'Chỉ đạo của Hội CCB tỉnh; KH tuyên truyền Chiến dịch', sanPham:'Tổng số tiền ủng hộ trên 24 triệu đồng; biên bản quy tập 01 hài cốt LS tại TDP 8, chuyển về NTL Vị Xuyên', tienDoHan:'T7-T9/2026', nhom:'N4', heSo:80, E:2, K:2, N:1, chamNgay:10})
-];
+function currentQuarterInfo(){
+  const d = new Date();
+  const q = Math.floor(d.getMonth()/3)+1;
+  return { quy: 'Quý '+['I','II','III','IV'][q-1], nam: String(d.getFullYear()) };
+}
 
 let state = null;
 
+// Trạng thái mặc định để trống — dùng chung cho mọi cán bộ, công chức, viên chức
+// (không riêng khối Mặt trận Tổ quốc/đoàn thể); người dùng tự điền thông tin và
+// nhiệm vụ của mình, hoặc dùng mục "Nhập nhanh từ báo cáo" / "+ Thêm nhiệm vụ".
 function defaultState(){
+  const { quy, nam } = currentQuarterInfo();
   return {
     header:{
-      coquan:'CƠ QUAN ỦY BAN MTTQ VIỆT NAM', donvi:'Phường Bình Thuận',
-      hoten:'Nguyễn Văn Đức', ngaysinh:'31/12/1980',
-      chucvuDang:'Ủy viên BCH Chi bộ các cơ quan Đảng, Đảng ủy phường Bình Thuận',
-      chucvuCQ:'Không',
-      chucvuDoanthe:'Chủ tịch Hội CCB phường kiêm Phó Chủ tịch MTTQ phường Bình Thuận',
-      donviCT:'Hội Cựu chiến binh phường Bình Thuận',
-      quy:'Quý III', nam:'2026'
+      coquan:'', donvi:'',
+      hoten:'', ngaysinh:'',
+      chucvuDang:'', chucvuCQ:'',
+      chucvuDoanthe:'', donviCT:'',
+      diaDanh:'', headerType:'quochieu',
+      quy, nam
     },
     wA:70, wB:30,
     criteria: flattenCriteria(CRITERIA_DEFAULT),
-    groupA: GROUP_A_SEED.map(t=>Object.assign({},t)),
-    groupB: GROUP_B_SEED.map(t=>Object.assign({},t))
+    groupA: [],
+    groupB: []
   };
 }
 
@@ -566,9 +551,10 @@ function renderInfo(){
   grid.innerHTML='';
   const fields = [
     ['hoten','Họ và tên'], ['ngaysinh','Ngày sinh'],
-    ['chucvuDang','Chức vụ Đảng'], ['chucvuCQ','Chức vụ chính quyền'],
-    ['chucvuDoanthe','Chức vụ đoàn thể'], ['donviCT','Đơn vị công tác'],
-    ['donvi','Đơn vị / phường'], ['coquan','Cơ quan']
+    ['chucvuDang','Chức vụ Đảng (nếu có)'], ['chucvuCQ','Chức vụ chính quyền'],
+    ['chucvuDoanthe','Chức vụ đoàn thể (nếu có)'], ['donviCT','Đơn vị công tác'],
+    ['donvi','Đơn vị / địa phương'], ['coquan','Cơ quan chủ quản cấp trên'],
+    ['diaDanh','Địa danh ghi trong văn bản (VD: Hà Nội, Tuyên Quang...)']
   ];
   fields.forEach(([key,label])=>{
     const f = el('div',{class:'field'});
@@ -578,6 +564,15 @@ function renderInfo(){
     f.appendChild(inp);
     grid.appendChild(f);
   });
+  const hf = el('div',{class:'field'});
+  hf.appendChild(el('label',{html:'Kiểu tiêu đề văn bản'}));
+  const hsel = el('select',{});
+  [['quochieu','Quốc hiệu (công chức, viên chức nói chung)'],['danghieu','Đảng hiệu (hồ sơ công tác Đảng)']].forEach(([v,label])=>{
+    const o = el('option',{value:v,html:label}); if((state.header.headerType||'quochieu')===v) o.selected=true; hsel.appendChild(o);
+  });
+  hsel.addEventListener('change', ()=>{ state.header.headerType=hsel.value; syncLetterhead(); save(); });
+  hf.appendChild(hsel);
+  grid.appendChild(hf);
   const qf = el('div',{class:'field'});
   qf.appendChild(el('label',{html:'Quý / Năm'}));
   const wrap = el('div',{style:'display:flex;gap:6px;'});
@@ -595,9 +590,13 @@ function renderInfo(){
   grid.style.display='grid';
 }
 function syncLetterhead(){
-  document.getElementById('lh-coquan').textContent = state.header.coquan;
-  document.getElementById('lh-donvi2').textContent = ' '+(state.header.donvi||'');
-  document.getElementById('lh-date').textContent = 'Tuyên Quang, '+state.header.quy+' năm '+state.header.nam;
+  document.getElementById('lh-coquan').textContent = state.header.coquan || '(Cơ quan chủ quản)';
+  document.getElementById('lh-donvi2').textContent = state.header.donvi || '(Đơn vị / địa phương)';
+  const isDang = state.header.headerType === 'danghieu';
+  document.getElementById('lh-hieu1').textContent = isDang ? 'ĐẢNG CỘNG SẢN VIỆT NAM' : 'CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM';
+  document.getElementById('lh-hieu2').textContent = isDang ? '' : 'Độc lập - Tự do - Hạnh phúc';
+  const diaDanh = state.header.diaDanh || '.......................';
+  document.getElementById('lh-date').textContent = diaDanh+', '+state.header.quy+' năm '+state.header.nam;
   document.getElementById('lh-quy').textContent = state.header.quy+', Năm '+state.header.nam;
 }
 
