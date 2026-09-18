@@ -1275,7 +1275,39 @@ function safeFileFragment(str){
   return ascii.trim().replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,'_');
 }
 
-function exportCurrentToExcel(){
+let downloadsNS = null;
+async function initDownloads(){
+  if(!(window.claude && typeof window.claude.use === 'function')) return;
+  try{ downloadsNS = await window.claude.use('downloads'); }catch(e){ downloadsNS = null; }
+}
+
+// Lưu workbook: trong môi trường xem Artifact (claude.ai) trình duyệt không cho
+// trang tự tải file xuống, phải xin lưu qua capability "downloads"; khi mở trực
+// tiếp file HTML này (hoặc bản Electron) thì XLSX.writeFile tải file bình thường.
+async function saveWorkbook(wb, filename, status){
+  if(downloadsNS){
+    try{
+      const buf = XLSX.write(wb, {type:'array', bookType:'xlsx'});
+      const res = await downloadsNS.save({ filename, data: buf });
+      status.textContent = (res.status==='saved' ? 'Đã lưu file "' : 'Đã gửi file "')+filename+'".';
+      return;
+    }catch(err){
+      const code = err && err.code;
+      if(code==='declined'){ status.textContent = 'Bạn đã hủy lưu file.'; return; }
+      if(code==='rate_limited'){ status.textContent = 'Đang có yêu cầu lưu file khác — thử lại sau giây lát.'; return; }
+      console.warn('downloads.save lỗi, thử tải trực tiếp:', err);
+    }
+  }
+  try{
+    XLSX.writeFile(wb, filename);
+    status.textContent = 'Đã xuất file "'+filename+'".';
+  }catch(e){
+    console.error(e);
+    status.textContent = 'Không thể xuất file Excel trong môi trường xem này.';
+  }
+}
+
+async function exportCurrentToExcel(){
   const status = document.getElementById('recordStatus');
   if(!(window.XLSX && XLSX.utils)){ status.textContent = 'Thư viện xuất Excel không khả dụng.'; return; }
   const aoa = buildDetailSheetAoa(state);
@@ -1285,11 +1317,11 @@ function exportCurrentToExcel(){
   XLSX.utils.book_append_sheet(wb, ws, 'Đánh giá');
   const name = safeFileFragment(state.header.hoten) || 'chua_co_ten';
   const file = 'Danh_gia_KPI_'+name+'_'+safeFileFragment(state.header.quy)+'_'+safeFileFragment(state.header.nam)+'.xlsx';
-  XLSX.writeFile(wb, file);
-  status.textContent = 'Đã xuất file "'+file+'".';
+  status.textContent = 'Đang tạo file Excel...';
+  await saveWorkbook(wb, file, status);
 }
 
-function exportAllToExcel(){
+async function exportAllToExcel(){
   const status = document.getElementById('recordStatus');
   if(!(window.XLSX && XLSX.utils)){ status.textContent = 'Thư viện xuất Excel không khả dụng.'; return; }
   if(!savedRecords.length){ status.textContent = 'Danh sách chưa có bản ghi nào — hãy "Lưu đánh giá đang xem vào danh sách" trước.'; return; }
@@ -1304,8 +1336,8 @@ function exportAllToExcel(){
   const today = new Date();
   const dstr = today.getFullYear()+String(today.getMonth()+1).padStart(2,'0')+String(today.getDate()).padStart(2,'0');
   const file = 'Tong_hop_danh_gia_KPI_'+dstr+'.xlsx';
-  XLSX.writeFile(wb, file);
-  status.textContent = 'Đã xuất file "'+file+'" ('+savedRecords.length+' bản ghi).';
+  status.textContent = 'Đang tạo file Excel...';
+  await saveWorkbook(wb, file, status);
 }
 
 function init(){
@@ -1429,6 +1461,7 @@ function init(){
     e.target.value = '';
   });
   initSample();
+  initDownloads();
 
   ghConfig = loadGhConfig();
   renderGhFields();
