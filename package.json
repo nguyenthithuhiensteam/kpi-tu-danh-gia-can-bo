@@ -1,0 +1,51 @@
+{
+  "name": "kpi-tu-danh-gia-can-bo",
+  "version": "1.0.0",
+  "description": "App tự đánh giá, xếp loại KPI cán bộ theo quý — bản cài đặt desktop",
+  "main": "main.js",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Nguyễn Thị Thu Hiền",
+    "email": "hiennguyen307@gmail.com"
+  },
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux",
+    "dist": "electron-builder -mwl"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.nguyenthithuhien.kpitudanhgia",
+    "productName": "App Tự đánh giá KPI cán bộ",
+    "files": [
+      "main.js",
+      "app_tu_danh_gia_kpi.html",
+      "build/icon.png"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "icon": "build/icon.png",
+    "win": {
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Office"
+    }
+  }
+}
