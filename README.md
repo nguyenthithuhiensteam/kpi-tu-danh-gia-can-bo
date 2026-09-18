@@ -38,7 +38,7 @@ Repo đã có sẵn GitHub Actions workflow (`.github/workflows/build.yml`) tự
 
 ## Cấu trúc dự án
 
-- `app_tu_danh_gia_kpi.html` — toàn bộ giao diện + logic tính điểm KPI (không phụ thuộc thư viện ngoài).
+- `app_tu_danh_gia_kpi.html` — toàn bộ giao diện + logic tính điểm KPI, kèm thư viện đọc file .docx (mammoth.js) nhúng sẵn để hoạt động offline, không cần tải gì thêm.
 - `main.js` — tiến trình chính Electron, mở file HTML trên trong một cửa sổ desktop.
 - `build/icon.png` — icon ứng dụng.
 - `.github/workflows/build.yml` — tự động build installer cho Windows/macOS/Linux.
