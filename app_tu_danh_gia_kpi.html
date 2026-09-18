@@ -241,11 +241,11 @@ footer{ text-align:center; color:var(--ink-soft); font-size:11.5px; padding:26px
   <!-- ============ NHAP TU BAO CAO (AI) ============ -->
   <div class="section">
     <div class="section-head"><span class="roman" style="background:var(--gold);font-size:10px;">AI</span><h2>Nhập nhanh từ báo cáo</h2></div>
-    <div class="section-note">Dán nội dung báo cáo công tác (hoặc tải file .txt / .docx) — AI sẽ tách thành từng nhiệm vụ và điền gợi ý dữ liệu để bạn kiểm tra, chỉnh sửa rồi mới thêm vào bảng bên dưới. Không có gì được thêm vào bảng cho đến khi bạn bấm xác nhận.</div>
+    <div class="section-note">Dán nội dung báo cáo công tác, hoặc tải lên một hoặc nhiều file .txt / .docx (giữ Ctrl/Cmd để chọn nhiều file) — nội dung các file sẽ được nối vào ô bên dưới. Chỉ hỗ trợ .docx (Word 2007 trở lên); file .doc cũ (Word 97–2003) cần mở bằng Word và "Save As" sang .docx trước. AI sẽ tách thành từng nhiệm vụ và điền gợi ý dữ liệu để bạn kiểm tra, chỉnh sửa rồi mới thêm vào bảng bên dưới. Không có gì được thêm vào bảng cho đến khi bạn bấm xác nhận.</div>
     <div class="card" style="padding:16px 18px;">
       <textarea id="reportText" rows="8" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);color:var(--ink);font-family:inherit;font-size:13px;" placeholder="Dán toàn bộ nội dung báo cáo công tác quý tại đây..."></textarea>
       <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-        <input type="file" id="reportFile" accept=".txt,.docx" style="font-size:12.5px;">
+        <input type="file" id="reportFile" accept=".txt,.docx" multiple style="font-size:12.5px;">
         <button class="btn btn-primary" id="analyzeBtn">Phân tích bằng AI</button>
         <span id="aiStatus" style="font-size:12.5px;color:var(--ink-soft);"></span>
       </div>
@@ -1122,33 +1122,79 @@ function init(){
   });
 
   document.getElementById('analyzeBtn').addEventListener('click', analyzeReport);
-  document.getElementById('reportFile').addEventListener('change', (e)=>{
-    const f = e.target.files[0];
-    if(!f) return;
+  function readFileAsArrayBuffer(file){
+    return new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = ()=>resolve(r.result);
+      r.onerror = ()=>reject(r.error || new Error('không đọc được file'));
+      r.readAsArrayBuffer(file);
+    });
+  }
+  function readFileAsText(file){
+    return new Promise((resolve, reject)=>{
+      const r = new FileReader();
+      r.onload = ()=>resolve(r.result);
+      r.onerror = ()=>reject(r.error || new Error('không đọc được file'));
+      r.readAsText(file, 'UTF-8');
+    });
+  }
+  function looksLikeZip(buf){
+    const b = new Uint8Array(buf.slice(0, 2));
+    return b[0] === 0x50 && b[1] === 0x4B; // chữ ký ZIP 'PK' — .docx thực chất là 1 file ZIP
+  }
+
+  document.getElementById('reportFile').addEventListener('change', async (e)=>{
+    const files = Array.from(e.target.files || []);
+    if(!files.length) return;
     const status = document.getElementById('aiStatus');
-    if(/\.docx$/i.test(f.name)){
-      if(!(window.mammoth && typeof window.mammoth.extractRawText === 'function')){
-        status.textContent = 'Không đọc được file .docx (thư viện xử lý không khả dụng) — thử dán nội dung trực tiếp hoặc dùng file .txt.';
-        return;
+    status.textContent = 'Đang đọc ' + files.length + ' file...';
+
+    const okChunks = [];
+    const problems = [];
+
+    for(const f of files){
+      const lower = f.name.toLowerCase();
+      try{
+        if(lower.endsWith('.docx')){
+          if(!(window.mammoth && typeof window.mammoth.extractRawText === 'function')){
+            problems.push(f.name + ': thư viện đọc .docx không khả dụng');
+            continue;
+          }
+          const buf = await readFileAsArrayBuffer(f);
+          if(!looksLikeZip(buf)){
+            problems.push(f.name + ': không phải file .docx hợp lệ — nếu đây là file .doc cũ (Word 97–2003), hãy mở bằng Word rồi dùng "Save As" → chọn định dạng .docx, sau đó tải lại file mới');
+            continue;
+          }
+          const result = await window.mammoth.extractRawText({ arrayBuffer: buf });
+          const text = (result.value || '').trim();
+          if(!text){ problems.push(f.name + ': không trích được nội dung văn bản nào (file có thể chỉ chứa ảnh/bảng phức tạp)'); continue; }
+          okChunks.push('===== ' + f.name + ' =====\n' + text);
+        } else if(lower.endsWith('.doc')){
+          problems.push(f.name + ': định dạng .doc cũ (Word 97–2003) chưa hỗ trợ — mở bằng Word rồi "Save As" sang .docx trước khi tải lên');
+        } else {
+          const text = await readFileAsText(f);
+          okChunks.push('===== ' + f.name + ' =====\n' + text);
+        }
+      }catch(err){
+        console.error('Lỗi đọc file', f.name, err);
+        problems.push(f.name + ': ' + (err && err.message ? err.message : 'lỗi không xác định'));
       }
-      status.textContent = 'Đang đọc file .docx...';
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        window.mammoth.extractRawText({ arrayBuffer: reader.result })
-          .then(result=>{
-            document.getElementById('reportText').value = result.value;
-            status.textContent = 'Đã đọc xong file .docx — kiểm tra nội dung rồi bấm "Phân tích bằng AI".';
-          })
-          .catch(err=>{ console.error(err); status.textContent = 'Không đọc được nội dung file .docx này — thử dán nội dung trực tiếp.'; });
-      };
-      reader.onerror = ()=>{ status.textContent = 'Không đọc được file — thử dán nội dung trực tiếp.'; };
-      reader.readAsArrayBuffer(f);
-    } else {
-      const reader = new FileReader();
-      reader.onload = ()=>{ document.getElementById('reportText').value = reader.result; };
-      reader.onerror = ()=>{ status.textContent = 'Không đọc được file — thử dán nội dung trực tiếp.'; };
-      reader.readAsText(f, 'UTF-8');
     }
+
+    if(okChunks.length){
+      const ta = document.getElementById('reportText');
+      const combined = okChunks.join('\n\n');
+      ta.value = ta.value.trim() ? ta.value.trim() + '\n\n' + combined : combined;
+    }
+
+    if(!problems.length){
+      status.textContent = 'Đã đọc xong ' + okChunks.length + ' file — kiểm tra nội dung rồi bấm "Phân tích bằng AI".';
+    } else if(okChunks.length){
+      status.textContent = 'Đọc được ' + okChunks.length + '/' + files.length + ' file. Có lỗi: ' + problems.join(' | ');
+    } else {
+      status.textContent = 'Không đọc được file nào. Chi tiết: ' + problems.join(' | ');
+    }
+    e.target.value = '';
   });
   initSample();
 
