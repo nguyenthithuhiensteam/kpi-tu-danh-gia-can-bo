@@ -23,6 +23,7 @@
   "build": {
     "appId": "com.nguyenthithuhien.kpitudanhgia",
     "productName": "App Tự đánh giá KPI cán bộ",
+    "publish": null,
     "files": [
       "main.js",
       "app_tu_danh_gia_kpi.html",
